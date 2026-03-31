@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Namenskonventionen in der Entwicklerwelt</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222636;
+      --border: #2e3347;
+      --accent: #5e7eff;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #0d1117;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #12152050 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: rgba(94,126,255,.15);
+      color: var(--accent);
+      border: 1px solid rgba(94,126,255,.3);
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .25rem .9rem;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2e8f0, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .75rem;
+    }
+
+    header p {
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 2rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      transition: all .2s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    section h2 .icon {
+      font-size: 1.2rem;
+    }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-bottom: .8rem;
+    }
+
+    .tag {
+      font-family: 'Courier New', monospace;
+      font-size: .78rem;
+      font-weight: 700;
+      padding: .2rem .55rem;
+      border-radius: 5px;
+      letter-spacing: .02em;
+    }
+
+    .tag-blue  { background: rgba(94,126,255,.18); color: #7fa0ff; }
+    .tag-purple{ background: rgba(167,139,250,.18); color: #c4b5fd; }
+    .tag-green { background: rgba(52,211,153,.18);  color: #6ee7b7; }
+    .tag-orange{ background: rgba(251,146,60,.18);  color: #fdba74; }
+    .tag-red   { background: rgba(248,113,113,.18); color: #fca5a5; }
+    .tag-yellow{ background: rgba(251,191,36,.18);  color: #fde68a; }
+
+    .card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .card .example {
+      font-family: 'Courier New', monospace;
+      font-size: .92rem;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .5rem .75rem;
+      margin: .6rem 0;
+      color: var(--green);
+      word-break: break-all;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    /* ── Use-Case table ── */
+    .use-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .use-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .75rem 1rem;
+      text-align: left;
+    }
+
+    .use-table td {
+      padding: .75rem 1rem;
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .use-table tr:hover td {
+      background: var(--surface2);
+    }
+
+    .use-table td code {
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: .1rem .4rem;
+      border-radius: 4px;
+    }
+
+    /* ── Do / Don't ── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 580px) {
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+
+    .do-box, .dont-box {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+    }
+
+    .do-box   { border: 1px solid rgba(52,211,153,.35); }
+    .dont-box { border: 1px solid rgba(248,113,113,.35); }
+
+    .do-box h4   { color: var(--green); margin-bottom: .75rem; font-size: .9rem; letter-spacing: .05em; }
+    .dont-box h4 { color: var(--red);   margin-bottom: .75rem; font-size: .9rem; letter-spacing: .05em; }
+
+    .code-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .code-list li {
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      padding: .35rem .6rem;
+      border-radius: 5px;
+    }
+
+    .do-box   .code-list li { background: rgba(52,211,153,.08);  color: #a7f3d0; }
+    .dont-box .code-list li { background: rgba(248,113,113,.08); color: #fca5a5; text-decoration: line-through; text-decoration-color: rgba(248,113,113,.5); }
+
+    /* ── Tip boxes ── */
+    .tip {
+      background: rgba(94,126,255,.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.2rem;
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: #a5b4fc;
+    }
+
+    .tip strong { color: var(--accent); }
+
+    /* ── Language section ── */
+    .lang-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .75rem;
+    }
+
+    .lang-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+
+    .lang-card h4 {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+    }
+
+    .lang-card ul {
+      list-style: none;
+      font-size: .82rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+
+    .lang-card ul li span.mono {
+      font-family: 'Courier New', monospace;
+      color: var(--green);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Scroll animation ── */
+    section {
+      animation: fadeUp .4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header>
+  <div class="badge">Developer Guide</div>
+  <h1>Namenskonventionen</h1>
+  <p>Ein kompakter Überblick über die wichtigsten Schreibstile, Regeln und Best Practices in der Softwareentwicklung.</p>
+</header>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav>
+  <a href="#stile">Schreibstile</a>
+  <a href="#anwendung">Anwendungsfälle</a>
+  <a href="#dos-donts">Do's & Don'ts</a>
+  <a href="#sprachen">Nach Sprache</a>
+  <a href="#dateien">Dateien & Ordner</a>
+  <a href="#git">Git & Commits</a>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main>
+
+  <!-- ── Schreibstile ── -->
+  <section id="stile">
+    <h2><span class="icon">✏️</span> Schreibstile im Überblick</h2>
+    <div class="card-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-blue">camelCase</span>
+        </div>
+        <h3>Camel Case</h3>
+        <div class="example">getUserName()<br>shoppingCartItems<br>isLoggedIn</div>
+        <p>Erstes Wort klein, jedes folgende Wort mit Großbuchstaben. Standard für Variablen und Methoden in JS, Java, Swift u.a.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-purple">PascalCase</span>
+        </div>
+        <h3>Pascal Case</h3>
+        <div class="example">UserProfile<br>ShoppingCart<br>HttpRequest</div>
+        <p>Jedes Wort beginnt mit Großbuchstaben. Verwendet für Klassen, Typen, Interfaces und React-Komponenten.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-green">snake_case</span>
+        </div>
+        <h3>Snake Case</h3>
+        <div class="example">user_name<br>max_retry_count<br>get_user_by_id</div>
+        <p>Alle Wörter klein, durch Unterstriche getrennt. Typisch in Python, Ruby, PHP sowie SQL-Spaltenbezeichnungen.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-orange">SCREAMING_SNAKE</span>
+        </div>
+        <h3>Screaming Snake Case</h3>
+        <div class="example">MAX_RETRY_COUNT<br>API_BASE_URL<br>DEFAULT_TIMEOUT</div>
+        <p>Wie snake_case, aber vollständig in Großbuchstaben. Universeller Standard für Konstanten und Umgebungsvariablen.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-red">kebab-case</span>
+        </div>
+        <h3>Kebab Case</h3>
+        <div class="example">user-profile<br>my-component.tsx<br>font-size: 16px</div>
+        <p>Wörter durch Bindestriche verbunden, alles klein. Standard in HTML-Attributen, CSS-Eigenschaften, URLs und Dateinamen.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-yellow">_underscore</span>
+        </div>
+        <h3>Leading Underscore</h3>
+        <div class="example">_privateHelper()<br>__dunder__<br>_internal_state</div>
+        <p>Ein führender Unterstrich signalisiert private/interne Member. Zwei Unterstriche (Dunder) kennzeichnen Python-Spezialattribute.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Anwendungsfälle ── -->
+  <section id="anwendung">
+    <h2><span class="icon">📋</span> Anwendungsfälle auf einen Blick</h2>
+    <table class="use-table">
+      <thead>
+        <tr>
+          <th>Kontext</th>
+          <th>Empfohlener Stil</th>
+          <th>Beispiel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Variablen &amp; Funktionen (JS/TS)</td>
+          <td><span class="tag tag-blue" style="font-size:.78rem">camelCase</span></td>
+          <td><code>fetchUserData()</code></td>
+        </tr>
+        <tr>
+          <td>Klassen &amp; Interfaces</td>
+          <td><span class="tag tag-purple" style="font-size:.78rem">PascalCase</span></td>
+          <td><code>UserRepository</code></td>
+        </tr>
+        <tr>
+          <td>Konstanten &amp; Env-Vars</td>
+          <td><span class="tag tag-orange" style="font-size:.78rem">SCREAMING_SNAKE</span></td>
+          <td><code>MAX_CONNECTIONS</code></td>
+        </tr>
+        <tr>
+          <td>Python-Variablen &amp; Funktionen</td>
+          <td><span class="tag tag-green" style="font-size:.78rem">snake_case</span></td>
+          <td><code>parse_config()</code></td>
+        </tr>
+        <tr>
+          <td>CSS-Klassen &amp; IDs</td>
+          <td><span class="tag tag-red" style="font-size:.78rem">kebab-case</span></td>
+          <td><code>.nav-bar-item</code></td>
+        </tr>
+        <tr>
+          <td>Datenbankfelder (SQL)</td>
+          <td><span class="tag tag-green" style="font-size:.78rem">snake_case</span></td>
+          <td><code>created_at</code></td>
+        </tr>
+        <tr>
+          <td>React-Komponenten</td>
+          <td><span class="tag tag-purple" style="font-size:.78rem">PascalCase</span></td>
+          <td><code>ButtonPrimary</code></td>
+        </tr>
+        <tr>
+          <td>URL-Pfade &amp; Slugs</td>
+          <td><span class="tag tag-red" style="font-size:.78rem">kebab-case</span></td>
+          <td><code>/user-settings/</code></td>
+        </tr>
+        <tr>
+          <td>Enum-Werte</td>
+          <td><span class="tag tag-orange" style="font-size:.78rem">SCREAMING_SNAKE</span></td>
+          <td><code>ORDER_STATUS.PENDING</code></td>
+        </tr>
+        <tr>
+          <td>Type-Aliases &amp; Generics</td>
+          <td><span class="tag tag-purple" style="font-size:.78rem">PascalCase</span></td>
+          <td><code>ApiResponse&lt;T&gt;</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ── Do's & Don'ts ── -->
+  <section id="dos-donts">
+    <h2><span class="icon">✅</span> Do's &amp; Don'ts</h2>
+    <div class="compare-grid">
+      <div class="do-box">
+        <h4>✔ GOOD</h4>
+        <ul class="code-list">
+          <li>getUserById()</li>
+          <li>isAuthenticated</li>
+          <li>MAX_RETRY_COUNT</li>
+          <li>UserProfileCard</li>
+          <li>product_description</li>
+          <li>handleFormSubmit()</li>
+          <li>BaseRepository</li>
+        </ul>
+      </div>
+      <div class="dont-box">
+        <h4>✘ AVOID</h4>
+        <ul class="code-list">
+          <li>GetUserById()</li>
+          <li>authenticated_flag</li>
+          <li>maxretrycount</li>
+          <li>userProfileCard</li>
+          <li>ProductDescription</li>
+          <li>handle_form_submit()</li>
+          <li>baserepository</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tip">
+      <strong>Goldene Regel:</strong> Konsistenz im Team schlägt persönliche Vorlieben. Ein Linter (ESLint, Pylint, Checkstyle) sorgt für automatische Durchsetzung.
+    </div>
+  </section>
+
+  <!-- ── Nach Sprache ── -->
+  <section id="sprachen">
+    <h2><span class="icon">🌐</span> Konventionen nach Sprache</h2>
+    <div class="lang-grid">
+
+      <div class="lang-card">
+        <h4>🟨 JavaScript / TypeScript</h4>
+        <ul>
+          <li>Variablen &amp; Funktionen: <span class="mono">camelCase</span></li>
+          <li>Klassen / Interfaces: <span class="mono">PascalCase</span></li>
+          <li>Konstanten: <span class="mono">UPPER_SNAKE</span></li>
+          <li>Dateien: <span class="mono">kebab-case.ts</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>🐍 Python</h4>
+        <ul>
+          <li>Variablen &amp; Funktionen: <span class="mono">snake_case</span></li>
+          <li>Klassen: <span class="mono">PascalCase</span></li>
+          <li>Konstanten: <span class="mono">UPPER_SNAKE</span></li>
+          <li>Module: <span class="mono">snake_case.py</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>☕ Java</h4>
+        <ul>
+          <li>Variablen &amp; Methoden: <span class="mono">camelCase</span></li>
+          <li>Klassen: <span class="mono">PascalCase</span></li>
+          <li>Konstanten: <span class="mono">UPPER_SNAKE</span></li>
+          <li>Pakete: <span class="mono">lowercase</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>🦀 Rust</h4>
+        <ul>
+          <li>Variablen &amp; Funktionen: <span class="mono">snake_case</span></li>
+          <li>Typen &amp; Enums: <span class="mono">PascalCase</span></li>
+          <li>Konstanten: <span class="mono">UPPER_SNAKE</span></li>
+          <li>Module: <span class="mono">snake_case</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>🐹 Go</h4>
+        <ul>
+          <li>Öffentlich (exported): <span class="mono">PascalCase</span></li>
+          <li>Privat (unexported): <span class="mono">camelCase</span></li>
+          <li>Konstanten: <span class="mono">PascalCase</span></li>
+          <li>Dateien: <span class="mono">snake_case.go</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>💎 Ruby</h4>
+        <ul>
+          <li>Variablen &amp; Methoden: <span class="mono">snake_case</span></li>
+          <li>Klassen &amp; Module: <span class="mono">PascalCase</span></li>
+          <li>Konstanten: <span class="mono">UPPER_SNAKE</span></li>
+          <li>Symbole: <span class="mono">:snake_case</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>🎨 CSS / SCSS</h4>
+        <ul>
+          <li>Klassen &amp; IDs: <span class="mono">kebab-case</span></li>
+          <li>BEM-Block: <span class="mono">block__element</span></li>
+          <li>BEM-Modifier: <span class="mono">block--modifier</span></li>
+          <li>Custom Props: <span class="mono">--my-color</span></li>
+        </ul>
+      </div>
+
+      <div class="lang-card">
+        <h4>🗄️ SQL</h4>
+        <ul>
+          <li>Tabellen: <span class="mono">snake_case</span></li>
+          <li>Spalten: <span class="mono">snake_case</span></li>
+          <li>Keywords: <span class="mono">UPPERCASE</span></li>
+          <li>Aliase: <span class="mono">snake_case</span></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Dateien & Ordner ── -->
+  <section id="dateien">
+    <h2><span class="icon">📁</span> Dateien &amp; Ordnerstruktur</h2>
+    <div class="card-grid">
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-red">kebab-case</span>
+        </div>
+        <h3>Allgemeine Web-Projekte</h3>
+        <div class="example">user-profile.ts<br>shopping-cart.css<br>api-client.test.js</div>
+        <p>Konsistenz mit URLs und HTML-Attributen, plattformunabhängig.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-purple">PascalCase</span>
+        </div>
+        <h3>React / Vue Komponenten</h3>
+        <div class="example">UserCard.tsx<br>ModalDialog.vue<br>NavBarItem.jsx</div>
+        <p>Dateiname entspricht dem Komponentennamen — sofort erkennbar.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="tag tag-green">snake_case</span>
+        </div>
+        <h3>Python-Module</h3>
+        <div class="example">user_service.py<br>db_connection.py<br>test_auth.py</div>
+        <p>PEP 8-Vorgabe: Module und Pakete immer in snake_case benennen.</p>
+      </div>
+
+    </div>
+    <div class="tip">
+      <strong>Tipp:</strong> Vermeide Leerzeichen und Sonderzeichen in Dateinamen — sie erzeugen Probleme in Terminals, URLs und CI-Pipelines.
+    </div>
+  </section>
+
+  <!-- ── Git & Commits ── -->
+  <section id="git">
+    <h2><span class="icon">🔀</span> Git: Branches &amp; Commit-Messages</h2>
+
+    <div class="card-grid" style="margin-bottom:1rem">
+      <div class="card">
+        <h3 style="margin-bottom:.6rem">Branch-Namen</h3>
+        <div class="example">feature/user-auth<br>fix/login-crash<br>chore/update-deps<br>release/v2.4.0</div>
+        <p>Präfix + kebab-case. Kategorien: <code style="color:var(--accent);background:var(--code-bg);padding:.1rem .4rem;border-radius:4px">feature</code>, <code style="color:var(--accent);background:var(--code-bg);padding:.1rem .4rem;border-radius:4px">fix</code>, <code style="color:var(--accent);background:var(--code-bg);padding:.1rem .4rem;border-radius:4px">chore</code>, <code style="color:var(--accent);background:var(--code-bg);padding:.1rem .4rem;border-radius:4px">docs</code>, <code style="color:var(--accent);background:var(--code-bg);padding:.1rem .4rem;border-radius:4px">refactor</code></p>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:.6rem">Conventional Commits</h3>
+        <div class="example">feat: add user avatar upload<br>fix: resolve null pointer in auth<br>docs: update API readme<br>refactor!: rewrite cart module</div>
+        <p>Format: <code style="color:var(--accent);background:var(--code-bg);padding:.1rem .4rem;border-radius:4px">type(scope): beschreibung</code> — ermöglicht automatische Changelogs und Versionierung.</p>
+      </div>
+    </div>
+
+    <table class="use-table">
+      <thead>
+        <tr>
+          <th>Commit-Typ</th>
+          <th>Bedeutung</th>
+          <th>Beispiel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>feat</code></td><td>Neues Feature</td><td><code>feat: dark mode toggle</code></td></tr>
+        <tr><td><code>fix</code></td><td>Fehlerbehebung</td><td><code>fix: logout redirect loop</code></td></tr>
+        <tr><td><code>docs</code></td><td>Dokumentation</td><td><code>docs: add setup guide</code></td></tr>
+        <tr><td><code>style</code></td><td>Formatierung, kein Logik-Change</td><td><code>style: run prettier</code></td></tr>
+        <tr><td><code>refactor</code></td><td>Refactoring ohne Bugfix/Feature</td><td><code>refactor: extract auth helper</code></td></tr>
+        <tr><td><code>test</code></td><td>Tests hinzufügen/ändern</td><td><code>test: unit tests for cart</code></td></tr>
+        <tr><td><code>chore</code></td><td>Build, CI, Abhängigkeiten</td><td><code>chore: bump eslint to v9</code></td></tr>
+        <tr><td><code>perf</code></td><td>Performance-Verbesserung</td><td><code>perf: lazy-load images</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <p>Namenskonventionen in der Entwicklerwelt &mdash; Referenz für konsistenten, lesbaren Code</p>
+  <p style="margin-top:.5rem; color: #5e6a82;">Erstellt von: Stephan Michler &nbsp;|&nbsp; Wissensdatenbank &nbsp;|&nbsp; 2026</p>
+</footer>
+
+</body>
+</html>
