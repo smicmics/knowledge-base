@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Setup Guide – Wissensdatenbank</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222636;
+      --border: #2e3347;
+      --accent: #5e7eff;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #0d1117;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Header ── */
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #12152050 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: rgba(94,126,255,.15);
+      color: var(--accent);
+      border: 1px solid rgba(94,126,255,.3);
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .25rem .9rem;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2e8f0, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .75rem;
+    }
+
+    header p {
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 2rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      transition: all .2s;
+    }
+
+    nav a:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+      animation: fadeUp .4s ease both;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    section h2 .icon { font-size: 1.2rem; }
+
+    /* ── Step Cards ── */
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      transition: border-color .2s;
+    }
+
+    .step:hover { border-color: var(--accent); }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+      margin-bottom: .9rem;
+    }
+
+    .step-number {
+      background: rgba(94,126,255,.18);
+      color: var(--accent);
+      border: 1px solid rgba(94,126,255,.35);
+      border-radius: 50%;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .8rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .step h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: .92rem;
+      margin-bottom: .6rem;
+    }
+
+    .step p:last-child { margin-bottom: 0; }
+
+    /* ── Code Blocks ── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      margin: .75rem 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .code-block .comment {
+      color: #4b5568;
+    }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: .1rem .4rem;
+      border-radius: 4px;
+    }
+
+    /* ── Inline list inside step ── */
+    .step ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+      margin: .5rem 0;
+    }
+
+    .step ul li {
+      font-size: .9rem;
+      color: var(--muted);
+      padding-left: 1.1rem;
+      position: relative;
+    }
+
+    .step ul li::before {
+      content: '›';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .step ul li code { font-size: .82rem; }
+
+    /* ── Tip / Warning boxes ── */
+    .tip {
+      background: rgba(94,126,255,.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.2rem;
+      margin-top: .9rem;
+      font-size: .88rem;
+      color: #a5b4fc;
+    }
+
+    .tip strong { color: var(--accent); }
+
+    .warning {
+      background: rgba(251,146,60,.08);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.2rem;
+      margin-top: .9rem;
+      font-size: .88rem;
+      color: #fdba74;
+    }
+
+    .warning strong { color: var(--orange); }
+
+    /* ── Lessons Learned ── */
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .lesson-card {
+      background: var(--surface);
+      border: 1px solid rgba(248,113,113,.25);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .lesson-card:hover {
+      border-color: rgba(248,113,113,.55);
+      transform: translateY(-2px);
+    }
+
+    .lesson-card .lesson-icon {
+      font-size: 1.4rem;
+      margin-bottom: .6rem;
+      display: block;
+    }
+
+    .lesson-card h3 {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: .5rem;
+    }
+
+    .lesson-card p {
+      font-size: .87rem;
+      color: var(--muted);
+    }
+
+    .lesson-card .fix {
+      margin-top: .6rem;
+      font-size: .83rem;
+      color: #6ee7b7;
+      display: flex;
+      align-items: flex-start;
+      gap: .4rem;
+    }
+
+    .lesson-card .fix::before {
+      content: '✔';
+      color: var(--green);
+      flex-shrink: 0;
+      margin-top: .05rem;
+    }
+
+    /* ── Tags ── */
+    .tag {
+      font-family: 'Courier New', monospace;
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .18rem .5rem;
+      border-radius: 5px;
+      letter-spacing: .02em;
+      display: inline-block;
+      margin-right: .3rem;
+      margin-bottom: .2rem;
+    }
+
+    .tag-blue   { background: rgba(94,126,255,.18); color: #7fa0ff; }
+    .tag-purple { background: rgba(167,139,250,.18); color: #c4b5fd; }
+    .tag-green  { background: rgba(52,211,153,.18);  color: #6ee7b7; }
+    .tag-orange { background: rgba(251,146,60,.18);  color: #fdba74; }
+
+    /* ── Scroll animation ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header>
+  <div class="badge">Einrichtungshilfe</div>
+  <h1>Claude Setup Guide</h1>
+  <p>Schritt-für-Schritt-Anleitung zur Einrichtung von Claude Desktop, Cowork, WSL 2, Git, GitHub und VS Code.</p>
+</header>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav>
+  <a href="index.html">← Startseite</a>
+  <a href="#claude">Claude & Cowork</a>
+  <a href="#wsl">WSL 2 & Ubuntu</a>
+  <a href="#git">Git & GitHub</a>
+  <a href="#token">Access Token</a>
+  <a href="#repo">Repository</a>
+  <a href="#vscode">VS Code</a>
+  <a href="#push">Erster Push</a>
+  <a href="#lessons">Lessons Learned</a>
+</nav>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<main>
+
+  <!-- ── 1 + 2: Claude & Cowork ── -->
+  <section id="claude">
+    <h2><span class="icon">🤖</span> Claude Desktop &amp; Cowork einrichten</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">1</div>
+        <h3>Claude Desktop App installieren</h3>
+      </div>
+      <p>Lade die Claude Desktop App von <strong>claude.ai/download</strong> herunter und führe den Installer aus. Nach der Installation mit deinem Anthropic-Konto anmelden.</p>
+      <ul>
+        <li>Windows: <code>.exe</code>-Installer herunterladen und ausführen</li>
+        <li>Nach dem Start: Anmelden mit bestehendem claude.ai-Konto</li>
+        <li>Cowork-Modus ist nach der Anmeldung direkt verfügbar</li>
+      </ul>
+      <div class="tip">
+        <strong>Hinweis:</strong> Cowork ist ein Research Preview — Funktionen können sich noch ändern.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">2</div>
+        <h3>Cowork einrichten und Ordnerstruktur anlegen</h3>
+      </div>
+      <p>Beim ersten Start von Cowork wird ein Arbeitsordner auf deinem Computer verknüpft. Lege diesen Ordner <strong>vorab im Explorer an</strong>, bevor du ihn in Cowork auswählst.</p>
+      <p>Empfohlene Ordnerstruktur für eine Wissensdatenbank:</p>
+      <div class="code-block"><span class="comment"># Empfohlene Struktur im Projektordner</span>
+knowledge-base/
+├── web/          <span class="comment"># HTML-Seiten</span>
+├── assets/       <span class="comment"># Bilder, Icons</span>
+└── raw-data/     <span class="comment"># Quelldateien, CSVs</span></div>
+      <div class="warning">
+        <strong>Achtung:</strong> Den Ordner entweder im Explorer anlegen <em>oder</em> über die GitHub-GUI erstellen — nicht beides. Sonst entstehen Konflikte beim ersten Push.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3: WSL 2 ── -->
+  <section id="wsl">
+    <h2><span class="icon">🐧</span> WSL 2 installieren und Ubuntu einrichten</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">3</div>
+        <h3>WSL 2 installieren und Ubuntu einrichten</h3>
+      </div>
+      <p>WSL 2 (Windows Subsystem for Linux) ermöglicht die Nutzung von Linux-Tools direkt unter Windows. PowerShell als Administrator öffnen und ausführen:</p>
+      <div class="code-block">wsl --install</div>
+      <p>Nach dem Neustart startet Ubuntu automatisch und fordert zur Anlage eines Linux-Benutzernamens und Passworts auf.</p>
+      <ul>
+        <li>Ubuntu-Version prüfen: <code>lsb_release -a</code></li>
+        <li>Pakete aktualisieren: <code>sudo apt update &amp;&amp; sudo apt upgrade -y</code></li>
+        <li>WSL-Version prüfen: <code>wsl --list --verbose</code> (sollte Version 2 zeigen)</li>
+      </ul>
+      <div class="tip">
+        <strong>Tipp:</strong> Das Linux-Passwort wird beim <code>sudo</code>-Befehl benötigt — sicher notieren.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4: Git & GitHub ── -->
+  <section id="git">
+    <h2><span class="icon">🔀</span> Git einrichten und GitHub Account anlegen</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">4</div>
+        <h3>Git einrichten und GitHub Account anlegen</h3>
+      </div>
+      <p>Git in WSL (Ubuntu) konfigurieren und einen GitHub-Account anlegen, falls noch keiner vorhanden ist.</p>
+      <div class="code-block"><span class="comment"># Git globale Identität setzen (in WSL/Ubuntu)</span>
+git config --global user.name "Dein Name"
+git config --global user.email "deine@email.de"
+
+<span class="comment"># Konfiguration prüfen</span>
+git config --list</div>
+      <ul>
+        <li>GitHub-Account anlegen unter <strong>github.com</strong></li>
+        <li>E-Mail-Adresse bestätigen (Bestätigungsmail kommt automatisch)</li>
+        <li>Benutzername sorgfältig wählen — erscheint in der GitHub Pages URL</li>
+      </ul>
+      <div class="warning">
+        <strong>Wichtig:</strong> Zusätzlich zu WSL Git auch <strong>Git für Windows</strong> installieren (git-scm.com). VS Code und andere Windows-Tools nutzen die Windows-Version, nicht das WSL-Git.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5: Token ── -->
+  <section id="token">
+    <h2><span class="icon">🔑</span> Personal Access Token erstellen</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">5</div>
+        <h3>Personal Access Token (PAT) erstellen</h3>
+      </div>
+      <p>GitHub akzeptiert keine Passwörter mehr für Git-Operationen über die Kommandozeile. Stattdessen wird ein Personal Access Token (PAT) benötigt.</p>
+      <ul>
+        <li>GitHub → Profilbild → <strong>Settings</strong></li>
+        <li>Linke Sidebar ganz unten: <strong>Developer settings</strong></li>
+        <li><strong>Personal access tokens → Tokens (classic)</strong></li>
+        <li><strong>Generate new token (classic)</strong> klicken</li>
+        <li>Note: z. B. <code>wsl-push</code>, Ablauf: 90 Tage</li>
+        <li>Scopes: <code>repo</code> vollständig aktivieren</li>
+        <li>Token generieren und <strong>sofort kopieren</strong> — er wird nur einmal angezeigt!</li>
+      </ul>
+      <div class="code-block"><span class="comment"># Token beim ersten Push als Passwort eingeben</span>
+Username: dein-github-benutzername
+Password: ghp_xxxxxxxxxxxxxxxxxxxx  <span class="comment"># ← Token, nicht das GitHub-Passwort!</span></div>
+      <div class="tip">
+        <strong>Tipp:</strong> Token in einem Passwortmanager speichern. Nach dem ersten erfolgreichen Push speichert Git den Token im Credential Store.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6: Repository & GitHub Pages ── -->
+  <section id="repo">
+    <h2><span class="icon">📦</span> Repository anlegen und GitHub Pages aktivieren</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">6</div>
+        <h3>Repository anlegen und GitHub Pages aktivieren</h3>
+      </div>
+      <p>Ein neues Repository auf GitHub anlegen und GitHub Pages für die automatische Veröffentlichung als Website aktivieren.</p>
+      <ul>
+        <li>GitHub → <strong>New repository</strong></li>
+        <li>Repository-Name wählen (wird Teil der URL: <code>benutzername.github.io/repo-name</code>)</li>
+        <li>Visibility: <strong>Public</strong> (für GitHub Pages kostenlos erforderlich)</li>
+        <li><strong>Keinen</strong> README, .gitignore oder Lizenz über die GUI hinzufügen, wenn der Ordner lokal bereits existiert</li>
+      </ul>
+      <p style="margin-top:.6rem">GitHub Pages aktivieren:</p>
+      <ul>
+        <li>Repository → <strong>Settings → Pages</strong></li>
+        <li>Source: <strong>Deploy from a branch</strong></li>
+        <li>Branch: <code>main</code>, Ordner: <code>/root</code> oder <code>/docs</code></li>
+        <li>Nach dem nächsten Push ist die Seite unter <code>https://benutzername.github.io/repo-name/</code> erreichbar</li>
+      </ul>
+      <div class="warning">
+        <strong>Achtung:</strong> Den Repository-Namen nicht identisch zum lokalen Ordnernamen wählen, wenn dieser bereits als Remote-URL konfiguriert wurde — das führt zu Verwechslungen beim Klonen.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7: VS Code ── -->
+  <section id="vscode">
+    <h2><span class="icon">💻</span> VS Code installieren mit Extensions</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">7</div>
+        <h3>VS Code installieren mit Extensions WSL und GitLens</h3>
+      </div>
+      <p>Visual Studio Code (code.visualstudio.com) installieren. Die beiden wichtigsten Extensions für dieses Setup:</p>
+
+      <div class="code-block"><span class="comment"># Extensions über die VS Code Kommandozeile installieren</span>
+code --install-extension ms-vscode-remote.remote-wsl
+code --install-extension eamodio.gitlens</div>
+
+      <ul>
+        <li><span class="tag tag-blue">WSL</span> Ermöglicht das Öffnen von WSL-Ordnern direkt in VS Code — Dateisystem, Terminal und Git laufen dabei in Linux</li>
+        <li><span class="tag tag-purple">GitLens</span> Erweitert die Git-Integration: Blame-Ansichten, Commit-Historie, Branch-Vergleiche direkt im Editor</li>
+      </ul>
+      <p style="margin-top:.6rem">WSL-Projekt in VS Code öffnen:</p>
+      <div class="code-block"><span class="comment"># Im Ubuntu-Terminal, im Projektordner:</span>
+code .</div>
+      <div class="tip">
+        <strong>Tipp:</strong> VS Code erkennt automatisch, dass der Ordner in WSL liegt, und schlägt vor, die WSL-Extension zu aktivieren. Einmalig bestätigen genügt.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 8: Erster Push ── -->
+  <section id="push">
+    <h2><span class="icon">🚀</span> Ersten Push durchführen</h2>
+
+    <div class="step">
+      <div class="step-header">
+        <div class="step-number">8</div>
+        <h3>Lokales Repository mit GitHub verbinden und pushen</h3>
+      </div>
+      <p>Im WSL-Terminal im Projektordner — Repository initialisieren, Remote setzen und ersten Commit pushen:</p>
+      <div class="code-block"><span class="comment"># Im Projektordner in Ubuntu/WSL</span>
+git init
+git add .
+git commit -m "feat: initial commit"
+
+<span class="comment"># Remote hinzufügen (URL von GitHub kopieren)</span>
+git remote add origin https://github.com/benutzername/repo-name.git
+
+<span class="comment"># Branch umbenennen (GitHub erwartet 'main')</span>
+git branch -M main
+
+<span class="comment"># Ersten Push durchführen (-u setzt Tracking für künftige Pushes)</span>
+git push -u origin main</div>
+      <p>Bei der Passwortabfrage den <strong>Personal Access Token</strong> eingeben (nicht das GitHub-Passwort).</p>
+      <div class="tip">
+        <strong>Danach:</strong> Weitere Pushes laufen einfach mit <code>git push</code> — Branch und Remote sind durch <code>-u</code> bereits verknüpft.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Lessons Learned ── -->
+  <section id="lessons">
+    <h2><span class="icon">💡</span> Lessons Learned</h2>
+    <p style="color: var(--muted); font-size: .92rem; margin-bottom: 1.25rem;">Häufige Stolperfallen beim ersten Einrichten — damit du sie nicht selbst erleben musst.</p>
+
+    <div class="lesson-grid">
+
+      <div class="lesson-card">
+        <span class="lesson-icon">🏷️</span>
+        <h3>Projektname ≠ Ordnername</h3>
+        <p>Repository-Namen auf GitHub nicht identisch zum lokalen Ordnernamen wählen. Das führt beim Klonen und bei der Remote-Konfiguration zu Verwirrung.</p>
+        <div class="fix">Eindeutige, beschreibende Namen für Ordner und Repository vergeben, die zwar zusammenpassen, aber nicht identisch sind.</div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-icon">🔐</span>
+        <h3>Token statt Passwort bei GitHub</h3>
+        <p>GitHub akzeptiert beim <code>git push</code> kein normales Konto-Passwort mehr. Der Push schlägt mit einem Authentifizierungsfehler fehl.</p>
+        <div class="fix">Personal Access Token (PAT) erstellen und diesen als Passwort eingeben. Token sofort nach der Erstellung kopieren.</div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-icon">📁</span>
+        <h3>Ordner vorab ODER über GUI anlegen</h3>
+        <p>Ordner lokal anlegen und zusätzlich über die GitHub-GUI mit README initialisieren — das erzeugt divergierende Historien, die sich nicht ohne Weiteres zusammenführen lassen.</p>
+        <div class="fix">Entweder den Ordner lokal anlegen und leer auf GitHub pushen — oder GitHub klonen und lokal befüllen. Nicht beides.</div>
+      </div>
+
+      <div class="lesson-card">
+        <span class="lesson-icon">🪟</span>
+        <h3>Git für Windows zusätzlich installieren</h3>
+        <p>WSL bringt zwar Git für Linux mit, aber Windows-Tools wie VS Code oder GitLens nutzen die Windows-Git-Instanz. Ohne Git für Windows funktionieren diese nicht korrekt.</p>
+        <div class="fix">Git für Windows von git-scm.com installieren. Beide Git-Instanzen (WSL + Windows) können unabhängig voneinander koexistieren.</div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer>
+  <p>Claude Setup Guide &mdash; Einrichtungshilfe für Claude Desktop, WSL 2 und GitHub</p>
+  <p style="margin-top:.5rem; color: #5e6a82;">Erstellt von: Stephan Michler &nbsp;|&nbsp; Wissensdatenbank &nbsp;|&nbsp; 2026</p>
+</footer>
+
+</body>
+</html>
