@@ -606,10 +606,8 @@ git push -u origin main</div>
       <div class="lesson-card">
         <span class="lesson-icon">🔒</span>
         <h3>VS Code Push Authentifizierung</h3>
-        <p>VS Code versucht beim ersten Push eine Browser-Authentifizierung bei GitHub — dieser Prozess kann feststecken und den Push blockieren.</p>
-        <div class="fix">Lösung 1: Im VS Code Terminal einmalig ausführen:</div>
-        <div class="code-block" style="margin: .5rem 0 .6rem; font-size: .8rem;">git config --global credential.helper manager</div>
-        <div class="fix">Lösung 2: Push immer zuverlässig über das WSL Terminal mit <code>git add</code>, <code>git commit</code>, <code>git push</code> durchführen — das ist für Einsteiger die verlässlichere Methode gegenüber der VS Code Source Control.</div>
+        <p>Beim ersten Push öffnet VS Code automatisch einen Browser-Login. Den GitHub Browser-Login dort <strong style="color: var(--red)">nicht</strong> verwenden — stattdessen den Reiter <strong style="color: var(--text)">„Token"</strong> wählen.</p>
+        <div class="fix">Personal Access Token einfügen. Danach funktioniert der Push über VS Code dauerhaft ohne erneute Anmeldung.</div>
       </div>
 
     </div>
