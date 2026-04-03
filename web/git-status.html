@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Status Symbole in VS Code – Wissensdatenbank</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222636;
+      --border: #2e3347;
+      --accent: #5e7eff;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #0d1117;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #12152050 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: rgba(94,126,255,.15);
+      color: var(--accent);
+      border: 1px solid rgba(94,126,255,.3);
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .25rem .9rem;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2e8f0, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .75rem;
+    }
+
+    header p {
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 2rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      transition: all .2s;
+    }
+
+    nav a:hover { color: var(--text); background: var(--surface2); }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+      animation: fadeUp .4s ease both;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    section h2 .icon { font-size: 1.2rem; }
+
+    p { color: var(--muted); font-size: .95rem; margin-bottom: .75rem; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Status-Karten ── */
+    .status-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: 5rem 1fr;
+      gap: 1.25rem;
+      align-items: start;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .status-card:hover { transform: translateX(4px); }
+
+    .status-card.untracked { border-left: 4px solid var(--green); }
+    .status-card.untracked:hover { border-color: var(--green); }
+
+    .status-card.modified  { border-left: 4px solid var(--orange); }
+    .status-card.modified:hover { border-color: var(--orange); }
+
+    .status-card.staged    { border-left: 4px solid var(--accent); }
+    .status-card.staged:hover { border-color: var(--accent); }
+
+    .status-card.clean     { border-left: 4px solid var(--muted); }
+    .status-card.clean:hover { border-color: var(--muted); }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 1.6rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    .badge-u { background: rgba(52,211,153,.15);  color: var(--green);  border: 2px solid rgba(52,211,153,.35); }
+    .badge-m { background: rgba(251,146,60,.15);  color: var(--orange); border: 2px solid rgba(251,146,60,.35); }
+    .badge-a { background: rgba(94,126,255,.15);  color: var(--accent); border: 2px solid rgba(94,126,255,.35); }
+    .badge-ok{ background: rgba(136,146,164,.1);  color: var(--muted);  border: 2px solid rgba(136,146,164,.25); font-size: 1.1rem; }
+
+    .status-body h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .4rem;
+    }
+
+    .status-body p { font-size: .9rem; margin-bottom: .4rem; }
+
+    .status-body ul {
+      list-style: none;
+      font-size: .87rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+      margin-top: .4rem;
+    }
+
+    .status-body ul li::before { content: '›'; margin-right: .4rem; font-weight: 700; }
+    .untracked .status-body ul li::before { color: var(--green); }
+    .modified  .status-body ul li::before { color: var(--orange); }
+    .staged    .status-body ul li::before { color: var(--accent); }
+
+    @media (max-width: 500px) {
+      .status-card { grid-template-columns: 1fr; }
+      .status-badge { width: 2.8rem; height: 2.8rem; font-size: 1.3rem; }
+    }
+
+    /* ── Ordner-Anzeige ── */
+    .folder-demo {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+      font-family: 'Courier New', monospace;
+      font-size: .9rem;
+      margin: 1rem 0;
+    }
+
+    .folder-demo .folder-line {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .2rem 0;
+    }
+
+    .folder-demo .dot {
+      width: .55rem;
+      height: .55rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-green  { background: #22c55e; box-shadow: 0 0 6px #22c55e88; }
+    .dot-orange { background: var(--orange); box-shadow: 0 0 6px rgba(251,146,60,.5); }
+    .dot-none   { background: transparent; border: 1px solid var(--border); }
+
+    .folder-demo .fname { color: var(--text); }
+    .folder-demo .fbadge {
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .05rem .35rem;
+      border-radius: 4px;
+      margin-left: .2rem;
+    }
+
+    .fbadge-u { background: rgba(52,211,153,.15); color: var(--green); }
+    .fbadge-m { background: rgba(251,146,60,.15); color: var(--orange); }
+
+    /* ── Before/After ── */
+    .before-after {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    @media (max-width: 580px) { .before-after { grid-template-columns: 1fr; } }
+
+    .ba-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.3rem;
+    }
+
+    .ba-box h4 {
+      font-size: .88rem;
+      font-weight: 700;
+      margin-bottom: .75rem;
+    }
+
+    .ba-box.before h4 { color: var(--orange); }
+    .ba-box.after  h4 { color: var(--green); }
+
+    .ba-box ul {
+      list-style: none;
+      font-size: .85rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+    }
+
+    .ba-box.before ul li::before { content: '→'; color: var(--orange); margin-right: .4rem; }
+    .ba-box.after  ul li::before { content: '✔'; color: var(--green);  margin-right: .4rem; }
+
+    /* ── Tabelle ── */
+    .use-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .use-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .75rem 1rem;
+      text-align: left;
+    }
+
+    .use-table td {
+      padding: .75rem 1rem;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .use-table tr:hover td { background: var(--surface2); }
+
+    .sym {
+      font-family: 'Courier New', monospace;
+      font-size: .9rem;
+      font-weight: 800;
+      display: inline-block;
+      width: 1.4rem;
+      text-align: center;
+    }
+
+    .sym-u { color: var(--green); }
+    .sym-m { color: var(--orange); }
+    .sym-a { color: var(--accent); }
+    .sym-d { color: var(--red); }
+    .sym-c { color: var(--accent2); }
+    .sym-r { color: var(--yellow); }
+
+    /* ── Tip ── */
+    .tip {
+      background: rgba(94,126,255,.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.2rem;
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: #a5b4fc;
+    }
+
+    .tip strong { color: var(--accent); }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: .1rem .4rem;
+      border-radius: 4px;
+    }
+
+    /* ── Keine Nachricht Box ── */
+    .good-news {
+      background: rgba(52,211,153,.07);
+      border: 1px solid rgba(52,211,153,.25);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      text-align: center;
+    }
+
+    .good-news .gn-icon { font-size: 2.5rem; margin-bottom: .6rem; }
+
+    .good-news h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: .5rem;
+    }
+
+    .good-news p { font-size: .9rem; color: var(--muted); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">VS Code</div>
+  <h1>Git Status Symbole</h1>
+  <p>Was bedeuten U, M und der grüne Punkt in VS Code? Alle Git-Statusanzeigen auf einen Blick erklärt.</p>
+</header>
+
+<nav>
+  <a href="index.html">← Startseite</a>
+  <a href="#symbole">Symbole erklärt</a>
+  <a href="#ordner">Ordner-Anzeige</a>
+  <a href="#alle">Alle Symbole</a>
+  <a href="#nach-push">Nach dem Push</a>
+  <a href="#keine-nachricht">Keine Nachricht</a>
+</nav>
+
+<main>
+
+  <!-- Symbole erklärt -->
+  <section id="symbole">
+    <h2><span class="icon">🔤</span> Die Hauptsymbole erklärt</h2>
+    <p>VS Code zeigt im Explorer und im Source Control Panel neben jeder Datei ein Buchstaben-Kürzel. Diese Kürzel spiegeln den Zustand der Datei im Git-Repository wider.</p>
+
+    <div class="status-card untracked">
+      <div class="status-badge badge-u">U</div>
+      <div class="status-body">
+        <h3>U — Untracked (nicht verfolgt)</h3>
+        <p>Die Datei ist neu und Git kennt sie noch nicht. Sie existiert auf dem Dateisystem, ist aber noch nie Teil eines Commits gewesen.</p>
+        <ul>
+          <li>Typisch beim Anlegen neuer Dateien oder Ordner</li>
+          <li>Git ignoriert die Datei komplett — kein Backup, keine Versionsgeschichte</li>
+          <li>Mit <code>git add datei.html</code> wird die Datei in die Git-Kontrolle aufgenommen</li>
+          <li>Danach wechselt das Symbol von <strong>U</strong> zu <strong>A</strong> (Added)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="status-card modified">
+      <div class="status-badge badge-m">M</div>
+      <div class="status-body">
+        <h3>M — Modified (verändert)</h3>
+        <p>Die Datei war bereits in einem früheren Commit enthalten und wurde seitdem verändert. Git hat die Änderungen erkannt, aber noch nicht gespeichert.</p>
+        <ul>
+          <li>Erscheint sobald gespeicherte Änderungen vom letzten Commit abweichen</li>
+          <li>Noch kein <code>git add</code> gemacht — Änderungen sind nicht gestaged</li>
+          <li>Ein <code>git add</code> + <code>git commit</code> sichert die neue Version dauerhaft</li>
+          <li>Ein <code>git restore datei.html</code> verwirft alle Änderungen seit dem letzten Commit</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="status-card staged">
+      <div class="status-badge badge-a">A</div>
+      <div class="status-body">
+        <h3>A — Added / Staged (vorgemerkt)</h3>
+        <p>Die Datei wurde mit <code>git add</code> für den nächsten Commit vorgemerkt (gestaged). Sie wartet darauf, mit <code>git commit</code> dauerhaft gesichert zu werden.</p>
+        <ul>
+          <li>Symbol wechselt von <strong>U</strong> oder <strong>M</strong> zu <strong>A</strong></li>
+          <li>Im Source Control Panel: Datei erscheint unter „Staged Changes"</li>
+          <li>Der Commit wird nur die gestageten Dateien einschließen</li>
+          <li>Mit <code>git restore --staged datei.html</code> kann das Staging rückgängig gemacht werden</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="status-card clean">
+      <div class="status-badge badge-ok">✓</div>
+      <div class="status-body">
+        <h3>Kein Symbol — Committed (gespeichert)</h3>
+        <p>Die Datei ist identisch mit dem letzten Commit. Es gibt keine ungesicherten Änderungen. VS Code zeigt kein Symbol an — das ist der gewünschte Normalzustand nach einem erfolgreichen Push.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ordner-Anzeige -->
+  <section id="ordner">
+    <h2><span class="icon">📂</span> Der grüne Punkt am Ordner</h2>
+    <p>VS Code zeigt nicht nur bei einzelnen Dateien, sondern auch bei Ordnern den Git-Status an — als farbiger Punkt in der Explorer-Ansicht.</p>
+
+    <div class="folder-demo">
+      <div class="folder-line">
+        <span>📁</span>
+        <span class="dot dot-green"></span>
+        <span class="fname">knowledge-base</span>
+        <span style="color:var(--muted); font-size:.8rem; margin-left:.5rem">← enthält neue/geänderte Dateien</span>
+      </div>
+      <div class="folder-line" style="padding-left:1.5rem">
+        <span>📁</span>
+        <span class="dot dot-green"></span>
+        <span class="fname">web</span>
+      </div>
+      <div class="folder-line" style="padding-left:3rem">
+        <span>📄</span>
+        <span class="dot dot-none"></span>
+        <span class="fname">index.html</span>
+        <span class="fbadge fbadge-u">U</span>
+      </div>
+      <div class="folder-line" style="padding-left:3rem">
+        <span>📄</span>
+        <span class="dot dot-orange"></span>
+        <span class="fname">namenskonventionen.html</span>
+        <span class="fbadge fbadge-m">M</span>
+      </div>
+    </div>
+
+    <p>Der farbige Punkt an einem Ordner bedeutet: <strong style="color:var(--text)">irgendwo in diesem Ordner</strong> gibt es Dateien mit offenem Git-Status. Der Punkt „blubbert" den Status der Kinder nach oben — bis zum Wurzelordner des Repositories.</p>
+
+    <div class="tip">
+      <strong>Farb-Bedeutung:</strong> Grün steht für neue ungetrackte Dateien (U), Orange/Gelb für veränderte Dateien (M). Die genaue Farbe hängt vom VS Code Theme ab — der Buchstabe an der Datei ist immer eindeutig.
+    </div>
+  </section>
+
+  <!-- Alle Symbole -->
+  <section id="alle">
+    <h2><span class="icon">📋</span> Alle Git-Symbole in VS Code</h2>
+
+    <table class="use-table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>Bezeichnung</th>
+          <th>Bedeutung</th>
+          <th>Nächster Schritt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="sym sym-u">U</span></td>
+          <td>Untracked</td>
+          <td>Neue Datei, Git kennt sie nicht</td>
+          <td><code>git add</code></td>
+        </tr>
+        <tr>
+          <td><span class="sym sym-m">M</span></td>
+          <td>Modified</td>
+          <td>Bekannte Datei, seit letztem Commit verändert</td>
+          <td><code>git add</code> → <code>git commit</code></td>
+        </tr>
+        <tr>
+          <td><span class="sym sym-a">A</span></td>
+          <td>Added / Staged</td>
+          <td>Für nächsten Commit vorgemerkt</td>
+          <td><code>git commit</code></td>
+        </tr>
+        <tr>
+          <td><span class="sym sym-d">D</span></td>
+          <td>Deleted</td>
+          <td>Datei wurde gelöscht, Git weiß es noch nicht</td>
+          <td><code>git add</code> → <code>git commit</code></td>
+        </tr>
+        <tr>
+          <td><span class="sym sym-r">R</span></td>
+          <td>Renamed</td>
+          <td>Datei wurde umbenannt</td>
+          <td><code>git add</code> → <code>git commit</code></td>
+        </tr>
+        <tr>
+          <td><span class="sym sym-c">C</span></td>
+          <td>Conflict</td>
+          <td>Merge-Konflikt muss manuell gelöst werden</td>
+          <td>Datei bearbeiten → <code>git add</code> → <code>git commit</code></td>
+        </tr>
+        <tr>
+          <td><span class="sym" style="color:var(--muted)">—</span></td>
+          <td>Clean</td>
+          <td>Kein Symbol — Datei ist identisch mit letztem Commit</td>
+          <td>Nichts zu tun ✔</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Nach dem Push -->
+  <section id="nach-push">
+    <h2><span class="icon">🚀</span> Was nach dem Push passiert</h2>
+    <p>Ein erfolgreicher Push verändert die Anzeige in VS Code spürbar. Alle Symbole verschwinden — der Arbeitsbereich ist wieder sauber.</p>
+
+    <div class="before-after">
+      <div class="ba-box before">
+        <h4>⏳ Vor dem Push</h4>
+        <ul>
+          <li>Dateien zeigen U, M oder A</li>
+          <li>Ordner zeigen farbige Punkte</li>
+          <li>Source Control Badge zeigt Anzahl der Änderungen (z. B. <strong style="color:var(--orange)">③</strong>)</li>
+          <li>GitHub zeigt noch den alten Stand</li>
+        </ul>
+      </div>
+      <div class="ba-box after">
+        <h4>✅ Nach dem Push</h4>
+        <ul>
+          <li>Keine Symbole mehr an Dateien</li>
+          <li>Keine farbigen Punkte an Ordnern</li>
+          <li>Source Control Badge ist leer oder weg</li>
+          <li>GitHub zeigt den aktuellen Stand</li>
+          <li>GitHub Pages baut die Website neu (1–3 Min.)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:1rem">
+      <strong>Ablauf:</strong> <code>git add .</code> → alle Symbole wechseln zu <strong>A</strong> → <code>git commit -m "..."</code> → Symbole verschwinden lokal → <code>git push</code> → GitHub und GitHub Pages sind aktuell.
+    </div>
+  </section>
+
+  <!-- Keine Nachricht -->
+  <section id="keine-nachricht">
+    <h2><span class="icon">🤫</span> Keine Nachricht — gute Nachricht</h2>
+
+    <div class="good-news">
+      <div class="gn-icon">🟢</div>
+      <h3>Kein Symbol = alles synchron</h3>
+      <p>Wenn VS Code keine Buchstaben-Symbole an Dateien und keine farbigen Punkte an Ordnern anzeigt, ist alles in Ordnung. Der lokale Stand ist identisch mit dem letzten Commit — und nach einem Push auch identisch mit GitHub.</p>
+    </div>
+
+    <p style="margin-top:1.25rem">Git ist ein <em>stilles</em> System: Es meldet sich nur, wenn etwas zu tun ist. Silence is success. Wer nach einem Push keine roten Meldungen und keine Symbole mehr sieht, hat alles richtig gemacht.</p>
+
+    <div class="tip">
+      <strong>Status jederzeit prüfen:</strong> Im Terminal mit <code>git status</code> — die Ausgabe <em>„nothing to commit, working tree clean"</em> ist die beste aller Möglichkeiten.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Git Status Symbole in VS Code &mdash; U, M und der grüne Punkt erklärt</p>
+  <p style="margin-top:.5rem; color: #5e6a82;">Erstellt von: Stephan Michler &nbsp;|&nbsp; Wissensdatenbank &nbsp;|&nbsp; 2026</p>
+</footer>
+
+</body>
+</html>

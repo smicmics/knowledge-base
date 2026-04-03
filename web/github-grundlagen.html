@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git und GitHub Grundlagen – Wissensdatenbank</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #222636;
+      --border: #2e3347;
+      --accent: #5e7eff;
+      --accent2: #a78bfa;
+      --green: #34d399;
+      --orange: #fb923c;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --text: #e2e8f0;
+      --muted: #8892a4;
+      --code-bg: #0d1117;
+      --radius: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1d27 0%, #12152050 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+    }
+
+    header .badge {
+      display: inline-block;
+      background: rgba(94,126,255,.15);
+      color: var(--accent);
+      border: 1px solid rgba(94,126,255,.3);
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: .25rem .9rem;
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #e2e8f0, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: .75rem;
+    }
+
+    header p {
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1.05rem;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 2rem;
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .85rem;
+      font-weight: 500;
+      padding: .3rem .75rem;
+      border-radius: 6px;
+      transition: all .2s;
+    }
+
+    nav a:hover { color: var(--text); background: var(--surface2); }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+      animation: fadeUp .4s ease both;
+    }
+
+    section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      padding-bottom: .6rem;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    section h2 .icon { font-size: 1.2rem; }
+
+    p { color: var(--muted); font-size: .95rem; margin-bottom: .75rem; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Concept Cards (groß) ── */
+    .concept {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 1rem;
+      transition: border-color .2s;
+    }
+
+    .concept:hover { border-color: var(--accent); }
+
+    .concept-header {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-bottom: .75rem;
+    }
+
+    .concept-icon {
+      font-size: 1.5rem;
+      width: 2.4rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .concept h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .concept .label {
+      font-family: 'Courier New', monospace;
+      font-size: .75rem;
+      font-weight: 700;
+      padding: .15rem .5rem;
+      border-radius: 5px;
+      background: rgba(94,126,255,.18);
+      color: #7fa0ff;
+      margin-left: auto;
+    }
+
+    .concept p { font-size: .9rem; margin-bottom: .5rem; }
+
+    /* ── Vergleichs-Split ── */
+    .compare-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    @media (max-width: 580px) { .compare-split { grid-template-columns: 1fr; } }
+
+    .box-git {
+      background: var(--surface);
+      border: 1px solid rgba(251,146,60,.3);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+    }
+
+    .box-github {
+      background: var(--surface);
+      border: 1px solid rgba(94,126,255,.3);
+      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem;
+    }
+
+    .box-git h3   { color: var(--orange); font-size: .95rem; font-weight: 700; margin-bottom: .7rem; }
+    .box-github h3 { color: var(--accent); font-size: .95rem; font-weight: 700; margin-bottom: .7rem; }
+
+    .box-git ul, .box-github ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .3rem;
+      font-size: .87rem;
+      color: var(--muted);
+    }
+
+    .box-git ul li::before   { content: '›'; color: var(--orange); margin-right: .4rem; font-weight: 700; }
+    .box-github ul li::before { content: '›'; color: var(--accent); margin-right: .4rem; font-weight: 700; }
+
+    /* ── Tabelle ── */
+    .use-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .use-table th {
+      background: var(--surface2);
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .75rem 1rem;
+      text-align: left;
+    }
+
+    .use-table td {
+      padding: .75rem 1rem;
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .use-table tr:hover td { background: var(--surface2); }
+
+    .use-table td code {
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: .1rem .4rem;
+      border-radius: 4px;
+    }
+
+    /* ── Code ── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .75rem 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      margin: .75rem 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .code-block .comment { color: #4b5568; }
+
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: .85rem;
+      color: var(--green);
+      background: var(--code-bg);
+      padding: .1rem .4rem;
+      border-radius: 4px;
+    }
+
+    /* ── Tip / Warning ── */
+    .tip {
+      background: rgba(94,126,255,.08);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.2rem;
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: #a5b4fc;
+    }
+
+    .tip strong { color: var(--accent); }
+
+    .warning {
+      background: rgba(251,146,60,.08);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: .9rem 1.2rem;
+      margin-top: 1rem;
+      font-size: .88rem;
+      color: #fdba74;
+    }
+
+    .warning strong { color: var(--orange); }
+
+    /* ── Flow Diagram ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+
+    .flow-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .5rem 1rem;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .flow-step.highlight {
+      border-color: var(--accent);
+      background: rgba(94,126,255,.1);
+      color: #a5b4fc;
+    }
+
+    .flow-arrow {
+      color: var(--muted);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--muted);
+      font-size: .82rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Versionskontrolle</div>
+  <h1>Git &amp; GitHub Grundlagen</h1>
+  <p>Der Unterschied zwischen Git und GitHub, die wichtigsten Begriffe und wie GitHub Pages eine Webseite aus einem Repository macht.</p>
+</header>
+
+<nav>
+  <a href="index.html">← Startseite</a>
+  <a href="#vs">Git vs. GitHub</a>
+  <a href="#begriffe">Begriffe</a>
+  <a href="#workflow">Workflow</a>
+  <a href="#token">Access Token</a>
+  <a href="#pages">GitHub Pages</a>
+</nav>
+
+<main>
+
+  <!-- Git vs. GitHub -->
+  <section id="vs">
+    <h2><span class="icon">⚔️</span> Git vs. GitHub — der Unterschied</h2>
+    <p>Die beiden Namen klingen ähnlich und werden oft zusammen genannt, sind aber grundverschiedene Dinge.</p>
+
+    <div class="compare-split">
+      <div class="box-git">
+        <h3>🔀 Git</h3>
+        <ul>
+          <li>Ein Programm, das lokal auf deinem Computer läuft</li>
+          <li>Verwaltet die Versionsgeschichte deiner Dateien</li>
+          <li>Arbeitet vollständig offline</li>
+          <li>Erfunden von Linus Torvalds (2005)</li>
+          <li>Keine Benutzeroberfläche, nur Terminal-Befehle</li>
+          <li>Kostenlos und Open Source</li>
+        </ul>
+      </div>
+      <div class="box-github">
+        <h3>🐙 GitHub</h3>
+        <ul>
+          <li>Eine Website (github.com) in der Cloud</li>
+          <li>Speichert Git-Repositories online (Remote)</li>
+          <li>Ermöglicht Zusammenarbeit im Team</li>
+          <li>Gehört zu Microsoft (seit 2018)</li>
+          <li>Hat eine grafische Benutzeroberfläche</li>
+          <li>Kostenlos für öffentliche Repositories</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip">
+      <strong>Merksatz:</strong> Git ist das Werkzeug — GitHub ist die Garage, in der du deine Arbeit aufbewahrst und mit anderen teilst. Git funktioniert auch ohne GitHub, aber GitHub braucht Git.
+    </div>
+  </section>
+
+  <!-- Begriffe -->
+  <section id="begriffe">
+    <h2><span class="icon">📖</span> Die wichtigsten Begriffe</h2>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">📦</div>
+        <h3>Repository (Repo)</h3>
+        <span class="label">repo</span>
+      </div>
+      <p>Ein Repository ist der Projektordner, den Git verwaltet. Er enthält alle Dateien des Projekts <em>und</em> die komplette Versionsgeschichte aller jemals gemachten Änderungen. Erkennbar am versteckten Unterordner <code>.git/</code>.</p>
+      <p>Ein Repository gibt es in zwei Varianten: <strong style="color:var(--text)">lokal</strong> (auf deinem Computer) und <strong style="color:var(--text)">remote</strong> (auf GitHub). Beide werden mit <code>git push</code> und <code>git pull</code> synchronisiert.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">📸</div>
+        <h3>Commit</h3>
+        <span class="label">git commit</span>
+      </div>
+      <p>Ein Commit ist ein gespeicherter Schnappschuss des aktuellen Projektzustands. Jeder Commit bekommt eine eindeutige ID (Hash), einen Zeitstempel und eine Beschreibung.</p>
+      <div class="code-block"><span class="comment"># Dateien für den nächsten Commit vormerken (stagen)</span>
+git add datei.html
+git add .            <span class="comment"># alle geänderten Dateien</span>
+
+<span class="comment"># Commit erstellen mit Beschreibung</span>
+git commit -m "feat: Startseite hinzugefügt"</div>
+      <p>Gute Commit-Messages beschreiben das <em>Warum</em>, nicht das Was. Konvention: <code>typ: kurze beschreibung</code> — z. B. <code>fix:</code>, <code>feat:</code>, <code>docs:</code>.</p>
+    </div>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">⬆️</div>
+        <h3>Push</h3>
+        <span class="label">git push</span>
+      </div>
+      <p>Push überträgt die lokalen Commits zum Remote-Repository auf GitHub. Erst nach einem Push sind die Änderungen online sichtbar — und für andere zugänglich.</p>
+      <div class="code-block"><span class="comment"># Lokale Commits zu GitHub übertragen</span>
+git push
+
+<span class="comment"># Beim ersten Push: Branch und Remote verknüpfen</span>
+git push -u origin main</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">⬇️</div>
+        <h3>Pull</h3>
+        <span class="label">git pull</span>
+      </div>
+      <p>Pull holt Änderungen vom Remote-Repository und integriert sie in den lokalen Stand. Wichtig, wenn mehrere Personen am selben Projekt arbeiten oder Änderungen direkt auf GitHub gemacht wurden.</p>
+      <div class="code-block"><span class="comment"># Neueste Änderungen von GitHub holen und integrieren</span>
+git pull
+
+<span class="comment"># Nur holen, noch nicht integrieren (zum Vergleichen)</span>
+git fetch</div>
+      <div class="tip" style="margin-top:.75rem">
+        <strong>Faustregel:</strong> Vor dem Arbeiten immer zuerst <code>git pull</code> — so vermeidet man Konflikte.
+      </div>
+    </div>
+  </section>
+
+  <!-- Workflow -->
+  <section id="workflow">
+    <h2><span class="icon">🔄</span> Der typische Workflow</h2>
+    <p>So sieht ein normaler Arbeitstag mit Git und GitHub aus:</p>
+
+    <div class="flow">
+      <div class="flow-step">📥 git pull</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step highlight">✏️ Dateien bearbeiten</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">📋 git add .</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">📸 git commit -m "..."</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">☁️ git push</div>
+    </div>
+
+    <table class="use-table" style="margin-top:1.25rem">
+      <thead>
+        <tr>
+          <th>Befehl</th>
+          <th>Was er tut</th>
+          <th>Wann benutzen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>git status</code></td><td>Zeigt geänderte, neue und gestagte Dateien</td><td>Immer — zur Orientierung</td></tr>
+        <tr><td><code>git add .</code></td><td>Alle Änderungen für Commit vormerken</td><td>Vor jedem Commit</td></tr>
+        <tr><td><code>git commit -m</code></td><td>Schnappschuss mit Beschreibung speichern</td><td>Nach abgeschlossener Teilaufgabe</td></tr>
+        <tr><td><code>git push</code></td><td>Commits zu GitHub hochladen</td><td>Nach einem oder mehreren Commits</td></tr>
+        <tr><td><code>git pull</code></td><td>GitHub-Stand lokal aktualisieren</td><td>Vor dem Arbeitsbeginn</td></tr>
+        <tr><td><code>git log --oneline</code></td><td>Kompakte Commit-Historie anzeigen</td><td>Zur Übersicht</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Personal Access Token -->
+  <section id="token">
+    <h2><span class="icon">🔑</span> Personal Access Token</h2>
+    <p>GitHub akzeptiert seit 2021 keine normalen Passwörter mehr für <code>git push</code> über HTTPS. Stattdessen wird ein <strong style="color:var(--text)">Personal Access Token (PAT)</strong> benötigt — ein generiertes Passwort mit eingeschränkten Rechten.</p>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">🏭</div>
+        <h3>Token erstellen</h3>
+      </div>
+      <p>GitHub → Profilbild (oben rechts) → <strong style="color:var(--text)">Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token</strong></p>
+      <p>Einstellungen für den Token:</p>
+      <div class="code-block"><span class="comment">Note:     wsl-push          (frei wählbarer Name)</span>
+Expiration: 90 days          <span class="comment">(oder kein Ablauf)</span>
+Scopes:   ☑ repo             <span class="comment">(alle repo-Berechtigungen)</span></div>
+      <div class="warning" style="margin-top:.75rem">
+        <strong>Einmalig sichtbar:</strong> Den Token direkt nach der Erstellung kopieren und sicher speichern. GitHub zeigt ihn nur einmal — danach nie wieder.
+      </div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">🔐</div>
+        <h3>Token verwenden</h3>
+      </div>
+      <p>Beim ersten <code>git push</code> fragt Git nach Benutzername und Passwort. Das Passwort ist der Token — nicht das GitHub-Konto-Passwort.</p>
+      <div class="code-block">Username: dein-github-benutzername
+Password: ghp_xxxxxxxxxxxxxxxxxxxx   <span class="comment">← Token hier einfügen</span></div>
+      <p>Danach speichert Git die Zugangsdaten automatisch im Credential Store — weitere Pushes verlaufen ohne erneute Eingabe.</p>
+      <div class="tip" style="margin-top:.75rem">
+        <strong>VS Code:</strong> Beim ersten Push in VS Code öffnet sich ein Browser-Fenster. Dort nicht den Browser-Login nutzen — stattdessen den Reiter <strong style="color:var(--text)">„Token"</strong> wählen und den PAT einfügen.
+      </div>
+    </div>
+  </section>
+
+  <!-- GitHub Pages -->
+  <section id="pages">
+    <h2><span class="icon">🌐</span> GitHub Pages aktivieren</h2>
+    <p>GitHub Pages verwandelt ein öffentliches Repository in eine statische Website — kostenlos, ohne eigenen Server, ohne Konfiguration. HTML, CSS und JavaScript werden direkt aus dem Repository ausgeliefert.</p>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">⚙️</div>
+        <h3>Schritt für Schritt aktivieren</h3>
+      </div>
+      <p>Im GitHub-Repository:</p>
+      <div class="code-block"><span class="comment">Repository → Settings → Pages</span>
+
+Source:  Deploy from a branch
+Branch:  main
+Folder:  / (root)           <span class="comment">← oder /docs für Unterordner</span>
+
+→ Save klicken</div>
+      <p>Nach dem nächsten Push ist die Seite automatisch erreichbar unter:</p>
+      <div class="code-block">https://benutzername.github.io/repository-name/</div>
+    </div>
+
+    <div class="concept">
+      <div class="concept-header">
+        <div class="concept-icon">⏱️</div>
+        <h3>Deployment-Zeit und Aktualisierung</h3>
+      </div>
+      <p>Nach jedem <code>git push</code> auf den <code>main</code>-Branch startet GitHub automatisch einen Build-Prozess. Die aktualisierte Website ist nach ca. 1–3 Minuten online.</p>
+      <p>Den Fortschritt des Deployments verfolgen unter: Repository → <strong style="color:var(--text)">Actions</strong> — dort wird jeder Build mit Status angezeigt.</p>
+      <div class="tip" style="margin-top:.75rem">
+        <strong>Tipp:</strong> Die <code>index.html</code> im Root-Verzeichnis (oder im <code>/docs</code>-Ordner) ist die Einstiegsseite. Andere HTML-Dateien sind über ihren relativen Pfad erreichbar.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Git &amp; GitHub Grundlagen &mdash; Versionskontrolle verständlich erklärt</p>
+  <p style="margin-top:.5rem; color: #5e6a82;">Erstellt von: Stephan Michler &nbsp;|&nbsp; Wissensdatenbank &nbsp;|&nbsp; 2026</p>
+</footer>
+
+</body>
+</html>
